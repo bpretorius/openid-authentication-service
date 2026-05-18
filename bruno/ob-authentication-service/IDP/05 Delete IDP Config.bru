@@ -1,0 +1,20 @@
+meta {
+  name: 05 Delete IDP Config
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/clients/idp/{{idpConfigId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Accept: application/json
+}
+

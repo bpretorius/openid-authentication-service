@@ -1,0 +1,40 @@
+meta {
+  name: 01 Create Client
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/clients
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "provider": "internal",
+    "clientId": "demo-client",
+    "clientSecret": "demo-secret",
+    "clientName": "Demo Client",
+    "aud": ["hotel_reservation"],
+    "mfaEnabled": false,
+    "requireProofKey": true,
+    "requireAuthorizationConsent": false,
+    "authenticationMethods": ["client_secret_basic"],
+    "grantTypes": ["authorization_code", "refresh_token"],
+    "scopes": ["read:hotel_reservation", "create:hotel_reservation"],
+    "roles": ["read:idp", "create:idp"],
+    "redirectUris": ["http://localhost:3000/callback"],
+    "postLogoutRedirectUris": ["http://localhost:3000"]
+  }
+}
+

@@ -1,0 +1,22 @@
+{
+    "files": [
+        {
+            "aql": {
+                "items.find": {
+                    "repo": "$REPO",
+                    "path": "$PATH",
+                    "name": {
+                        "$match": "sha256__*"
+                    }
+                }
+            },
+            "include": [
+                "path"
+            ],
+            "sortBy": [
+                "size"
+            ],
+            "sortOrder": "desc"
+        }
+    ]
+}

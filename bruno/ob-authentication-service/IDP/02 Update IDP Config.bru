@@ -1,0 +1,37 @@
+meta {
+  name: 02 Update IDP Config
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/clients/idp/{{idpConfigId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "tenantId": "tenant-001",
+    "registrationId": "google",
+    "clientId": "google-client-id",
+    "clientSecret": "google-client-secret-updated",
+    "issuerUri": "https://accounts.google.com",
+    "authorizationUri": "https://accounts.google.com/o/oauth2/v2/auth",
+    "tokenUri": "https://oauth2.googleapis.com/token",
+    "jwkSetUri": "https://www.googleapis.com/oauth2/v3/certs",
+    "userInfoUri": "https://openidconnect.googleapis.com/v1/userinfo",
+    "userNameAttribute": "sub",
+    "scope": "openid profile email"
+  }
+}
+

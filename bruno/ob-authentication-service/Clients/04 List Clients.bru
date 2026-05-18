@@ -1,0 +1,19 @@
+meta {
+  name: 04 List Clients
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/clients?page=0&size=10&sortBy=clientName&sortDirection=asc
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

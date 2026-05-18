@@ -1,0 +1,20 @@
+meta {
+  name: 05 Delete Client
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/clients/{{clientId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Accept: application/json
+}
+

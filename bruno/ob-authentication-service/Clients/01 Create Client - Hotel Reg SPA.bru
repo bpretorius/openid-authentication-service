@@ -1,0 +1,43 @@
+meta {
+  name: 01 Create Client - Hotel Reg SPA
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/clients
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "provider": "internal",
+    "clientId": "hotel-firebase-client",
+    "clientSecret": "demo-secret",
+    "clientName": "Hotel Firebase SPA",
+    "aud": ["hotel_reservation"],
+    "mfaEnabled": false,
+    "requireProofKey": true,
+    "requireAuthorizationConsent": false,
+    "authenticationMethods": ["client_secret_basic"],
+    "grantTypes": ["authorization_code", "refresh_token"],
+    "scopes": ["openid", "profile", "email"],
+    "roles": ["user:hotel_reservation"],
+    "redirectUris": [
+      "hhttp://localhost:8081/login/oauth2/code/google"
+    ],
+    "postLogoutRedirectUris": [
+      "https://hotel-reservation-496414.firebaseapp.com"
+    ]
+  }
+}

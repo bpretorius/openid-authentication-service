@@ -1,0 +1,36 @@
+meta {
+  name: 01 Create IDP Config
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/clients/idp
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "tenantId": "hotel-reservation",
+    "registrationId": "google",
+    "clientId": "601814367769-pqhdk4hnbup1b3l3a9lgbje1n5jhbglq.apps.googleusercontent.com",
+    "clientSecret": "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",
+    "issuerUri": "https://accounts.google.com",
+    "authorizationUri": "https://accounts.google.com/o/oauth2/v2/auth",
+    "tokenUri": "https://oauth2.googleapis.com/token",
+    "jwkSetUri": "https://www.googleapis.com/oauth2/v3/certs",
+    "userInfoUri": "https://openidconnect.googleapis.com/v1/userinfo",
+    "userNameAttribute": "sub",
+    "scope": "openid profile email"
+  }
+}

@@ -1,0 +1,126 @@
+##################################################################################
+# Server Config
+##################################################################################
+server:
+  port: 8443
+  error:
+    whitelabel:
+      enabled: true
+  ssl:
+    enabled: true
+    key-store: ${LOCAL_SSL_KEY_STORE:file:./certs/local/localhost.p12}
+    key-store-type: ${LOCAL_SSL_KEY_STORE_TYPE:PKCS12}
+    key-store-password: ${LOCAL_SSL_KEY_STORE_PASSWORD:changeit}
+    key-alias: ${LOCAL_SSL_KEY_ALIAS:localhost}
+##################################################################################
+# Spring Config
+##################################################################################
+spring:
+  cloud:
+    config:
+      enabled: false
+  data:
+    redis:
+      ssl:
+        enabled: false
+      pool:
+        max-total: 3
+        max-idle: 2
+        min-idle: 1
+        max-wait: 3000
+        max-timeout: 5000
+      host: localhost
+      port: 6379
+      username: ""
+      password: ""
+  jpa:
+    open-in-view: false
+    hibernate:
+      show-sql: true
+      ddl-auto: validate
+  jackson:
+    default-property-inclusion: NON_NULL
+    deserialization:
+      fail-on-unknown-properties: false
+  flyway:
+    enabled: true
+    schemas:
+      - public
+  datasource:
+    auth-reader-db:
+      url: jdbc:postgresql://localhost:5432/auth
+      username: postgres
+      password: password
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+    auth-writer-db:
+      url: jdbc:postgresql://localhost:5432/auth
+      username: postgres
+      password: password
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 5
+
+##################################################################################
+# App Config
+##################################################################################
+
+encryption:
+  secret: 12345678901234567890123456789012 # must be 32 bytes
+
+app:
+  jwt_key_id: 1
+  access_token_TTL: 60 # minutes
+  refresh_token_TTL: 7 # days
+  token_expiry_time_cleanup_hours: 24
+  default_entity_TTL: 300 # seconds
+  security_context_entity_TTL: 3600 # seconds
+  client_entity_TTL: 300 # seconds
+  validationErrorCodes:
+    REFUND_OUTSIDE_ALLOWED_RANGE:
+      - 180
+  default_authCodeUrl: https://localhost:8443/login/oauth2/code/
+  default_resources:
+    - hotel_reservation
+  default_authenticationMethods:
+    - none
+  default_grantTypes:
+    - authorization_code
+    - refresh_token
+  default_scopes:
+    - create:hotel_reservation
+    - read:hotel_reservation
+    - update:hotel_reservation
+    - delete:hotel_reservation
+  default_roles:
+    - user:hotel_reservation
+  default_redirectUris:
+    -  http://localhost:3000/callback
+  default_postLogoutRedirectUris:
+    - http://localhost:3000
+
+jwt:
+  secret:
+    key: yVMO9QNJ5i2IBZLZCuJPGg==
+
+##################################################################################
+# Logging Config
+##################################################################################
+logging:
+  level:
+    io: INFO
+    redis: INFO
+    jakarta: INFO
+    com: INFO
+    org:
+      postgresql: INFO
+      hibernate: INFO
+      springframework:
+        beans: INFO
+        data: INFO
+        security: INFO
+        session: INFO
+        boot: INFO
+        cloud: INFO
+        spring: INFO

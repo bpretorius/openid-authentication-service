@@ -1,0 +1,23 @@
+meta {
+  name: 03 Get Client by Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/clients/:id
+  body: none
+  auth: bearer
+}
+
+params:path {
+  id: 16191de2-a5c2-4731-86c0-2cd66571b80e
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

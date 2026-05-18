@@ -1,0 +1,9 @@
+{
+    "builds": [
+      {
+        "name": "$BUILD_NAME",
+        "number": "$RUN",
+        "project": "$PROJECT_KEY"
+      }
+    ]
+  }

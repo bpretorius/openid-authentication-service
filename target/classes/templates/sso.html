@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <style>
+        .logo { text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="logo">
+        <img th:src="@{/images/ikea.svg}" alt="Corporate Logo" width="150"/>
+    </div>
+
+    <form class="login-form" method="post" th:action="@{/sso}">
+        <h2>Please sign in</h2>
+
+        <p>
+            <label for="sso_registration_id" class="screenreader">Organisation Name</label>
+            <input type="text" id="sso_registration_id" name="sso_registration_id" placeholder="Organisation Name" required autofocus>
+        </p>
+
+        <div th:if="${errorMessage}" class="error-message">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <button type="submit" class="primary">Sign in</button>
+
+    </form>
+</div>
+</body>
+</html>

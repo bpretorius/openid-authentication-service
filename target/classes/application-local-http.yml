@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: local-http
+  cloud:
+    config:
+      enabled: false
+
+server:
+  port: 8081
+  ssl:
+    enabled: false
+
+app:
+  default_authCodeUrl: http://localhost:8081/login/oauth2/code/

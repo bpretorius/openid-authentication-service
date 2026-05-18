@@ -1,0 +1,20 @@
+meta {
+  name: 03 Get IDP Config by Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/clients/idp/{{idpConfigId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Accept: application/json
+}
+

@@ -1,0 +1,25 @@
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: authentication-service
+  cloud:
+    config:
+      fail-fast: true
+  config:
+    import: "optional:configserver:http://config-server:8888/"
+    activate:
+      on-profile: "!local && !local-http && !test"
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    liveness-state:
+      enabled: true
+    readiness-state:
+      enabled: true
+

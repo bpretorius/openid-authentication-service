@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "name": "OB Authentication Service",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
+
