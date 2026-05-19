@@ -15,20 +15,20 @@
 
 ### Three Core Components
 
-#### 1. **External IDP Integration** (Already Exists)
+#### 1. **External IDP Integration**
 - External companies have their own Azure AD, Google Workspace, Okta, etc.
 - Users authenticate with their company's IDP
 - Spring Auth Server acts as an OAuth2/OIDC client to these external IDPs
 - Users get an ID token from their company's IDP
 
-#### 2. **B2B Company Registry** (NEW - Add 5 Tables)
+#### 2. **B2B Company Registry**
 The IKEA platform tracks:
 - Which external companies are registered
 - Which external IDP each company uses
 - Which users belong to which company
 - Which IKEA resources each company can access
 
-#### 3. **Resource-Level Access Control** (NEW - Add Authorization Layer)
+#### 3. **Resource-Level Access Control**
 - IKEA resources (orders, inventory, shipments, etc.) are tagged with company associations
 - When a user requests a resource, the system checks: "Does this user's company have access to this resource?"
 - If yes → Return data (200 OK)
@@ -45,11 +45,11 @@ The IKEA platform tracks:
    └─ Clicks "Sign In"
 
 2. System shows company options:
+   ├─ □ Capgmeini
    ├─ □ Acme Manufacturing
-   ├─ □ ProLog Logistics
    └─ □ BuildRight Construction
    
-   └─ Alice selects "Acme Manufacturing"
+   └─ Alice selects "Capgmeini"
 
 3. Alice is redirected to Acme's Azure AD login page
    └─ Alice enters: alice@acme.com / password

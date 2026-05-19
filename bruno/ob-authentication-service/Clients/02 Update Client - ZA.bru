@@ -1,0 +1,57 @@
+meta {
+  name: 02 Update Client - ZA
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/clients/:id
+  body: json
+  auth: bearer
+}
+
+params:path {
+  id: ce1c8333-2502-48c7-a2c2-36f75646c153
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "provider": "capgemini",
+    "clientId": "118437367477241736716",
+    "clientName": "Robert Pretorius",
+    "aud": [
+      "hotel_reservation"
+    ],
+    "mfaEnabled": false,
+    "requireProofKey": true,
+    "requireAuthorizationConsent": false,
+    "authenticationMethods": [
+      "none"
+    ],
+    "grantTypes": [
+      "refresh_token",
+      "authorization_code"
+    ],
+    "scopes": [
+      "read:hotel_reservation"
+    ],
+    "roles": [
+      "user:hotel_reservation"
+    ],
+    "redirectUris": [
+      "http://localhost:3000/callback"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:3000"
+    ]
+  }
+}

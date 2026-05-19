@@ -5,13 +5,13 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/api/clients/idp/{{idpConfigId}}
+  url: {{baseUrl}}/api/clients/idp/:id
   body: json
   auth: bearer
 }
 
-auth:bearer {
-  token: {{accessToken}}
+params:path {
+  id: 7
 }
 
 headers {
@@ -19,12 +19,15 @@ headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: {{accessToken}}
+}
+
 body:json {
   {
-    "tenantId": "tenant-001",
-    "registrationId": "google",
-    "clientId": "google-client-id",
-    "clientSecret": "google-client-secret-updated",
+    "tenantId": "capgemini",
+    "registrationId": "capgemini",
+    "clientId": "601814367769-pqhdk4hnbup1b3l3a9lgbje1n5jhbglq.apps.googleusercontent.com",
     "issuerUri": "https://accounts.google.com",
     "authorizationUri": "https://accounts.google.com/o/oauth2/v2/auth",
     "tokenUri": "https://oauth2.googleapis.com/token",
@@ -34,4 +37,3 @@ body:json {
     "scope": "openid profile email"
   }
 }
-

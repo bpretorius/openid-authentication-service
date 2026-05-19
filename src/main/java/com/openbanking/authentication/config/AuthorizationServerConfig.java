@@ -2,7 +2,9 @@ package com.openbanking.authentication.config;
 
 import com.openbanking.authentication.dto.ClientRequest;
 import com.openbanking.authentication.entities.Client;
+import com.openbanking.authentication.entities.CustomerIdpConfig;
 import com.openbanking.authentication.entities.JwkEntity;
+import com.openbanking.authentication.repository.reader.ReaderCustomerIdpRepository;
 import com.openbanking.authentication.repository.reader.ReaderJwkRepository;
 import com.openbanking.authentication.repository.writer.WriterJwkRepository;
 import com.openbanking.authentication.services.ClientService;
@@ -31,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -111,6 +114,7 @@ public class AuthorizationServerConfig {
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(HttpServletRequest request,
                                                                    HttpServletResponse response,
                                                                    ClientService clientService,
+                                                                   ReaderCustomerIdpRepository readerCustomerIdpRepository,
                                                                    JpaOAuth2AuthorizationService jpaOAuth2AuthorizationService,
                                                                    RedisSecurityContextRepository redisSecurityContextRepository) {
         return context -> {
@@ -148,6 +152,12 @@ public class AuthorizationServerConfig {
 
             context.getClaims().claim("name", clientName);
 
+            // Include tenant in issued JWTs when user authenticated via external IDP.
+            resolveTenantId(authentication, clientService, readerCustomerIdpRepository).ifPresent(tenantId -> {
+                context.getClaims().claim("tenantId", tenantId);
+                context.getClaims().claim("tenant_id", tenantId);
+            });
+
             RegisteredClient client = context.getRegisteredClient();
             Object rolesSetting = client.getClientSettings().getSetting("roles");
 
@@ -178,6 +188,24 @@ public class AuthorizationServerConfig {
             return jwt.getClaim(attributeName);
         }
         return null;
+    }
+
+    private Optional<String> resolveTenantId(Authentication authentication,
+                                             ClientService clientService,
+                                             ReaderCustomerIdpRepository readerCustomerIdpRepository) {
+        if (authentication instanceof OAuth2AuthenticationToken oauth2AuthenticationToken) {
+            String registrationId = oauth2AuthenticationToken.getAuthorizedClientRegistrationId();
+            if (StringUtils.isNotBlank(registrationId)) {
+                return readerCustomerIdpRepository.findByRegistrationIdIgnoreCase(registrationId)
+                        .map(CustomerIdpConfig::getTenantId);
+            }
+        }
+
+        return clientService.findByClientId(authentication.getName())
+                .map(Client::getProvider)
+                .filter(StringUtils::isNotBlank)
+                .flatMap(provider -> readerCustomerIdpRepository.findByRegistrationIdIgnoreCase(provider)
+                        .map(CustomerIdpConfig::getTenantId));
     }
 
     private String getSessionId(Authentication authentication) {

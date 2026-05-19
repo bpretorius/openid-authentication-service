@@ -1,7 +1,7 @@
 meta {
   name: 01 Create Client
   type: http
-  seq: 1
+  seq: 2
 }
 
 post {
@@ -10,13 +10,13 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{accessToken}}
-}
-
 headers {
   Accept: application/json
   Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
 }
 
 body:json {
@@ -37,4 +37,3 @@ body:json {
     "postLogoutRedirectUris": ["http://localhost:3000"]
   }
 }
-

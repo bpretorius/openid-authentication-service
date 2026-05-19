@@ -5,16 +5,19 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/clients/idp/{{idpConfigId}}
+  url: {{baseUrl}}/api/clients/idp/:id
   body: none
   auth: bearer
 }
 
-auth:bearer {
-  token: {{accessToken}}
+params:path {
+  id: 7
 }
 
 headers {
   Accept: application/json
 }
 
+auth:bearer {
+  token: {{accessToken}}
+}
