@@ -7,7 +7,7 @@
 **Company**: IKEA (or any enterprise)
 
 **Problem Statement**:
-> IKEA wants to register other companies (suppliers, partners, logistics providers) in their platform. These external companies have their own identity providers (Azure AD, Google, Okta, etc.). IKEA needs to allow users from these external companies to access IKEA systems, BUT only see and modify resources that are associated with their specific company. Additionally, users from one company should NOT be able to access resources from another company.
+> IKEA wants to register other companies (suppliers, partners, logistics providers) in their platform. These external companies have their own identity providers (google, Okta, etc.). IKEA needs to allow users from these external companies to access IKEA systems, BUT only see and modify resources that are associated with their specific company. Additionally, users from one company should NOT be able to access resources from another company.
 
 ---
 
@@ -16,7 +16,7 @@
 ### Three Core Components
 
 #### 1. **External IDP Integration**
-- External companies have their own Azure AD, Google Workspace, Okta, etc.
+- External companies have their own google, Okta, etc.
 - Users authenticate with their company's IDP
 - Spring Auth Server acts as an OAuth2/OIDC client to these external IDPs
 - Users get an ID token from their company's IDP
@@ -38,37 +38,38 @@ The IKEA platform tracks:
 
 ## How It Works: Step-by-Step
 
-### Example: Alice from Acme Manufacturing Logs In
+### Example: Alice from Captemini Manufacturing Logs In
 
 ```
 1. Alice visits: https://ikea-portal.example.com
    └─ Clicks "Sign In"
 
-2. System shows company options:
+2. Alice is redirected to the Spring Auth signin in screen.  
+    She slecgs SSO and enters her company e.g.:
    ├─ □ Capgmeini
-   ├─ □ Acme Manufacturing
+   ├─ □ Captemini Manufacturing
    └─ □ BuildRight Construction
    
    └─ Alice selects "Capgmeini"
 
-3. Alice is redirected to Acme's Azure AD login page
-   └─ Alice enters: alice@acme.com / password
+3. Alice is redirected to Captemini's google login page
+   └─ Alice enters: alice@captemini.com / password
 
-4. Acme's Azure AD validates and returns token
-   ├─ sub: "acme-user-123" (Alice's ID in Acme's system)
-   ├─ email: "alice@acme.com"
-   └─ Issued by: Microsoft Azure
+4. Captemini's google validates and returns token
+   ├─ sub: "captemini-user-123" (Alice's ID in Captemini's system)
+   ├─ email: "alice@captemini.com"
+   └─ Issued by: google
 
 5. Spring Auth Server (IKEA) processes the token
-   ├─ Verifies token signature with Azure's public key
-   ├─ Extracts: sub="acme-user-123", email="alice@acme.com"
-   ├─ Looks up: Which company uses Azure? → "Acme Manufacturing" (id=1)
-   ├─ Looks up: Which company is user "acme-user-123"? → Company 1
-   ├─ Determines: User's company context = Acme (id=1)
+   ├─ Verifies token signature with google's public key
+   ├─ Extracts: sub="captemini-user-123", email="alice@captemini.com"
+   ├─ Looks up: Which company uses google? → "Captemini Manufacturing" (id=1)
+   ├─ Looks up: Which company is user "captemini-user-123"? → Company 1
+   ├─ Determines: User's company context = Captemini (id=1)
    └─ **ENRICHES TOKEN** with company info:
       ├─ b2b_company_id: "1"
-      ├─ b2b_company_key: "acme"
-      ├─ b2b_company_name: "Acme Manufacturing"
+      ├─ b2b_company_key: "captemini"
+      ├─ b2b_company_name: "Captemini Manufacturing"
       └─ b2b_user_roles: "supplier_user"
 
 6. Spring generates JWT and returns to Alice
@@ -90,8 +91,8 @@ The IKEA platform tracks:
    └─ Returns: 403 Forbidden "Your company does not have access"
 
 9. Audit trail records:
-   ├─ alice@acme.com READ order-12345 ✓ at 10:30:45
-   ├─ alice@acme.com READ order-99999 ✗ DENIED at 10:31:12
+   ├─ alice@captemini.com READ order-12345 ✓ at 10:30:45
+   ├─ alice@captemini.com READ order-99999 ✗ DENIED at 10:31:12
 ```
 
 ---
@@ -103,19 +104,19 @@ The IKEA platform tracks:
 ```sql
 b2b_company
 ├─ id, company_name, company_key, description
-└─ Stores: Acme, ProLog, BuildRight
+└─ Stores: Captemini, ProLog, BuildRight
 
 b2b_company_idp_mapping
 ├─ b2b_company_id, customer_idp_config_id
-└─ Links: Acme → Azure AD, ProLog → Google, BuildRight → Okta
+└─ Links: Captemini → google, ProLog → Google, BuildRight → Okta
 
 b2b_user_company_mapping
 ├─ federated_user_id, federated_email, idp_registration_id, b2b_company_id
-└─ Links: "acme-user-123" (from Azure) → Acme company
+└─ Links: "captemini-user-123" (from google) → Captemini company
 
 b2b_resource_company_access
 ├─ resource_id, resource_type, b2b_company_id, access_level
-└─ Stores: order-12345 → Acme [READ], order-99999 → ProLog [READ]
+└─ Stores: order-12345 → Captemini [READ], order-99999 → ProLog [READ]
 
 b2b_access_audit_log
 ├─ b2b_company_id, federated_user_id, resource_id, action, timestamp
@@ -145,7 +146,7 @@ b2b_access_audit_log
 
 **Defense-in-Depth**: Access is controlled at 5 layers
 
-1. **Authentication**: User logs in via external IDP (Azure, Google, Okta)
+1. **Authentication**: User logs in via external IDP (google, Okta)
 2. **Token Enrichment**: Spring adds company context to JWT
 3. **API Authorization**: Verify JWT signature + company exists
 4. **Resource Access**: Check company has permission for resource
@@ -255,9 +256,9 @@ IKEA Portal
 │  └─ Can see all IKEA resources (unchanged)
 │
 └─ B2B Companies (NEW)
-   ├─ Acme Manufacturing (Azure AD)
-   │  ├─ alice@acme.com → can see: orders 12345, 12346, inventory 5678
-   │  └─ bob@acme.com → can see: orders 12345, 12346, inventory 5678
+   ├─ Captemini Manufacturing (google)
+   │  ├─ alice@captemini.com → can see: orders 12345, 12346, inventory 5678
+   │  └─ bob@captemini.com → can see: orders 12345, 12346, inventory 5678
    │
    ├─ ProLog Logistics (Google)
    │  ├─ charlie@prolog.com → can see: inventory 5678, shipments 999
@@ -373,7 +374,7 @@ A: Yes - that's already supported. They would just have no company context (trea
 A: Users for that company can't log in. But existing logged-in users keep access. Can fall back to admin-issued temporary password.
 
 **Q: How do we handle federated user ID collisions (same email at different companies)?**
-A: Primary key is (federated_user_id, idp_registration_id, b2b_company_id) - so alice@acme.com (from Azure) is different from alice@acme.com (from another IDP).
+A: Primary key is (federated_user_id, idp_registration_id, b2b_company_id) - so alice@captemini.com (from google) is different from alice@captemini.com (from another IDP).
 
 ---
 

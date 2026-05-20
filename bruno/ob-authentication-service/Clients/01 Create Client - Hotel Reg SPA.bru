@@ -22,11 +22,10 @@ auth:bearer {
 body:json {
   {
     "provider": "internal",
-    "clientId": "hotel-firebase-client",
+    "clientId": "hotel-reservation",
     "clientSecret": "demo-secret",
-    "clientName": "Hotel Firebase SPA",
+    "clientName": "Hotel Reservation SPA",
     "aud": ["hotel_reservation"],
-    "mfaEnabled": false,
     "requireProofKey": true,
     "requireAuthorizationConsent": false,
     "authenticationMethods": ["client_secret_basic"],
@@ -35,9 +34,6 @@ body:json {
     "roles": ["user:hotel_reservation"],
     "redirectUris": [
       "hhttp://localhost:8081/login/oauth2/code/google"
-    ],
-    "postLogoutRedirectUris": [
-      "https://hotel-reservation-496414.firebaseapp.com"
     ]
   }
 }
